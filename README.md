@@ -223,6 +223,12 @@ ai-workspace/
 
 ---
 
+## 관련 저장소
+
+- **[ai-memory-backup](https://github.com/doublesilver/ai-memory-backup)** _(private)_ — 이 운영 환경의 Claude 메모리를 **PII 마스킹**해 백업하는 비공개 저장소. **설정·워크플로는 공개(이 repo), 메모리는 비공개**로 분리하는 게 원칙.
+
+---
+
 <div align="center">
 
 **Built & operated with [Claude Code](https://claude.com/claude-code)**
