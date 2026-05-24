@@ -27,3 +27,6 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# 이 저장소 자체의 Claude Code 설정 (격리 해제용)
+.claude/
