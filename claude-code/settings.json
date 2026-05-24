@@ -114,12 +114,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if git rev-parse --git-dir >/dev/null 2>&1; then echo '═══ Git 상태 ═══'; git status --short 2>/dev/null; echo ''; echo '═══ 최근 커밋 5개 ═══'; git log --oneline -5 2>/dev/null; echo ''; if [ -f CLAUDE.md ]; then echo '═══ 프로젝트 기획문서 존재 ✓ (2단계 기획 완료) ═══'; else echo '⚠ CLAUDE.md(기획문서) 없음 — 외주 프로젝트면 /기획부터 시작 권장'; fi; echo ''; latest=$(ls -t inspection-report-*.md 2>/dev/null | head -1); if [ -n \"$latest\" ]; then echo \"═══ 최근 검수 보고서: $latest ═══\"; fi; fi",
-            "timeout": 8,
-            "async": true
-          },
-          {
-            "type": "command",
             "command": "command -v codegraph >/dev/null 2>&1 && [ -d .codegraph ] && codegraph sync-if-dirty . 2>/dev/null || true",
             "timeout": 30,
             "async": true
