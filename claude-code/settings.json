@@ -123,6 +123,12 @@
             "command": "command -v codegraph >/dev/null 2>&1 && [ -d .codegraph ] && codegraph sync-if-dirty . 2>/dev/null || true",
             "timeout": 30,
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/ai-workspace/claude-code/scripts/status.sh\" 2>/dev/null || true",
+            "timeout": 8,
+            "async": true
           }
         ]
       }
