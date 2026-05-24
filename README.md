@@ -12,7 +12,7 @@
 ![Model](https://img.shields.io/badge/Orchestration-Opus_4.7_·_Sonnet_·_Haiku-FF6B35?style=for-the-badge)
 ![Workflow](https://img.shields.io/badge/Workflow-9_Stage_+_Side_CR-2EA043?style=for-the-badge)
 
-![Slash Commands](https://img.shields.io/badge/Slash_Commands-17-blue)
+![Slash Commands](https://img.shields.io/badge/Slash_Commands-18-blue)
 ![Review Agents](https://img.shields.io/badge/Review_Agents-5-blueviolet)
 ![Quality Gates](https://img.shields.io/badge/Quality_Gates-3_불변-critical)
 ![Tracking](https://img.shields.io/badge/Progress_Tracking-Token_0-success)
@@ -37,7 +37,7 @@
 | | | |
 |---:|:---|:---|
 | **9** | 단계 워크플로 | Discovery → 인수·하자보수 (0~8단계) |
-| **17** | 슬래시 스킬 | `/견적` `/기획` `/전수검사` `/배포-production` `/상태` … |
+| **18** | 슬래시 스킬 | `/견적` `/기획` `/전수검사` `/상태` `/이슈동기화` … |
 | **5** | 검수 서브에이전트 | security · accessibility · performance · ux · plan-compliance |
 | **3** | 불변 품질 게이트 | 착수금 / UAT 통과 / Production 사용자 확인 |
 | **3** | 모델 라우팅 | Opus(사고) · Sonnet(구현) · Haiku(반복) 자동 분배 |
@@ -158,6 +158,7 @@ critical flow는 **수용 테스트를 먼저 합의 → 통과까지 구현**.
 | **CCPM** | bash 기반 진행 추적 (no-LLM) | `/상태` 대시보드 + SessionStart 자동 표시 |
 | **CCManager** | git worktree 다중 세션 관리 | 여러 클라이언트 외주 병렬 운영 |
 | **OMC / Ruflo** | 모델 라우팅 · 병렬 에이전트 사상 | §12 모델 정책 · 8-에이전트 검수 |
+| **GitHub Issues** | 클라이언트가 진행상황 직접 열람 | `/이슈동기화` — In-Scope를 Issues로 발행 (CCPM식) |
 
 > 거버넌스(계약·책임·게이트) 외피는 이 저장소만의 것 — 어떤 범용 플러그인에도 없다.
 > 코드 속도·세션 관리 같은 수평 기능은 직접 만들지 않고 **생태계를 부품으로 흡수**한다.
@@ -170,7 +171,7 @@ critical flow는 **수용 테스트를 먼저 합의 → 통과까지 구현**.
 flowchart TD
     CM[<b>CLAUDE.md</b><br/>글로벌 규칙 · §0~§16<br/>운영 철학 · 게이트 · 모델 정책]:::core
 
-    CM --> CMD[<b>commands/</b><br/>17 슬래시 스킬]
+    CM --> CMD[<b>commands/</b><br/>18 슬래시 스킬]
     CM --> AG[<b>agents/</b><br/>5 검수 에이전트]
     CM --> TP[<b>templates/</b><br/>견적·기획·인수·보고]
     CM --> SC[<b>scripts/</b><br/>bash 진행 추적]
@@ -194,10 +195,10 @@ ai-workspace/
 ├── claude-code/          # Claude Code 글로벌 설정 (단일 원본)
 │   ├── CLAUDE.md         #   외주 워크플로 v2.0 + 운영 철학 + 엔지니어링/품질 표준
 │   ├── settings.json     #   권한 · 게이트 강제 hook · SessionStart 대시보드 · statusLine
-│   ├── commands/         #   슬래시 스킬 17종
+│   ├── commands/         #   슬래시 스킬 18종
 │   ├── agents/           #   검수 서브에이전트 5종
 │   ├── templates/        #   문서 템플릿 4종
-│   └── scripts/          #   bash 진행 추적 (토큰 0)
+│   └── scripts/          #   bash 진행 추적 · GitHub 라벨 세트
 ├── prompts/              # 재사용 프롬프트 라이브러리
 ├── knowledge/            # "AI를 더 잘 쓰는 법" 지식 베이스
 └── tools/                # 기타 AI 도구 설정·메모
