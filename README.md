@@ -12,11 +12,12 @@
 ![Model](https://img.shields.io/badge/Orchestration-Opus_4.7_·_Sonnet_·_Haiku-FF6B35?style=for-the-badge)
 ![Workflow](https://img.shields.io/badge/Workflow-9_Stage_+_Side_CR-2EA043?style=for-the-badge)
 
-![Slash Commands](https://img.shields.io/badge/Slash_Commands-16-blue)
+![Slash Commands](https://img.shields.io/badge/Slash_Commands-17-blue)
 ![Review Agents](https://img.shields.io/badge/Review_Agents-5-blueviolet)
 ![Quality Gates](https://img.shields.io/badge/Quality_Gates-3_불변-critical)
+![Tracking](https://img.shields.io/badge/Progress_Tracking-Token_0-success)
+![Multi-Client](https://img.shields.io/badge/Multi--Client-ccmanager-orange)
 ![Governance](https://img.shields.io/badge/Governance-§0~§16-informational)
-![Maintained](https://img.shields.io/badge/Maintained-yes-success)
 
 </div>
 
@@ -36,7 +37,7 @@
 | | | |
 |---:|:---|:---|
 | **9** | 단계 워크플로 | Discovery → 인수·하자보수 (0~8단계) |
-| **16** | 슬래시 스킬 | `/견적` `/기획` `/전수검사` `/배포-production` … |
+| **17** | 슬래시 스킬 | `/견적` `/기획` `/전수검사` `/배포-production` `/상태` … |
 | **5** | 검수 서브에이전트 | security · accessibility · performance · ux · plan-compliance |
 | **3** | 불변 품질 게이트 | 착수금 / UAT 통과 / Production 사용자 확인 |
 | **3** | 모델 라우팅 | Opus(사고) · Sonnet(구현) · Haiku(반복) 자동 분배 |
@@ -69,6 +70,28 @@ flowchart LR
 
 각 단계마다 **전용 슬래시 스킬 · 산출물 · 통과 게이트 · 권장 모델**이 정의되어 있다.
 "이 단계를 생략하면 분쟁 시 책임 한계 보호가 가능한가?" — 답이 아니오면 생략 불가.
+
+---
+
+## 실시간 진행 대시보드 (토큰 0)
+
+세션을 열면 — 또는 `/상태` 한 번이면 — 현 외주가 9단계 중 어디까지 왔는지, 게이트가 막혔는지, 다음에 뭘 해야 하는지가 **즉시** 뜬다. LLM 분석 없이 산출물 파일만 bash로 스캔하므로 **토큰 소모 0**.
+
+```text
+═══ 외주 진행상황 · acme-commerce ═══
+[v] 0 Discovery     [v] 1 견적·계약    [v] 2 기획
+[v] 3 디자인        [v] 4 개발         [v] 5 검수
+[ ] 6 UAT           [ ] 7 배포         [ ] 8 인수
+
+─── 게이트 ───
+[v] 게이트① 착수금 확인됨
+[ ] 게이트② UAT 미통과 2건 → Production 배포 불가
+
+─── 다음 권장 행동 ───
+→ 6단계: /UAT (미통과 0건까지)
+```
+
+여러 클라이언트를 오갈 때 "이 외주 어디까지 했지?"를 0초에 복구한다.
 
 ---
 
@@ -126,19 +149,36 @@ critical flow는 **수용 테스트를 먼저 합의 → 통과까지 구현**.
 
 ---
 
+## 생태계 벤치마킹 — 좋은 건 훔쳐 온다
+
+범용 멀티에이전트 프레임워크(OMC·Ruflo·SuperClaude)와 스펙주도 PM(CCPM·BMAD)을 분석해, **이 비즈니스 운영체계에 맞는 패턴만 선별 이식**했다.
+
+| 출처 | 빌려온 것 | 적용 |
+|---|---|---|
+| **CCPM** | bash 기반 진행 추적 (no-LLM) | `/상태` 대시보드 + SessionStart 자동 표시 |
+| **CCManager** | git worktree 다중 세션 관리 | 여러 클라이언트 외주 병렬 운영 |
+| **OMC / Ruflo** | 모델 라우팅 · 병렬 에이전트 사상 | §12 모델 정책 · 8-에이전트 검수 |
+
+> 거버넌스(계약·책임·게이트) 외피는 이 저장소만의 것 — 어떤 범용 플러그인에도 없다.
+> 코드 속도·세션 관리 같은 수평 기능은 직접 만들지 않고 **생태계를 부품으로 흡수**한다.
+
+---
+
 ## 오케스트레이션 구조
 
 ```mermaid
 flowchart TD
     CM[<b>CLAUDE.md</b><br/>글로벌 규칙 · §0~§16<br/>운영 철학 · 게이트 · 모델 정책]:::core
 
-    CM --> CMD[<b>commands/</b><br/>16 슬래시 스킬]
+    CM --> CMD[<b>commands/</b><br/>17 슬래시 스킬]
     CM --> AG[<b>agents/</b><br/>5 검수 에이전트]
     CM --> TP[<b>templates/</b><br/>견적·기획·인수·보고]
+    CM --> SC[<b>scripts/</b><br/>bash 진행 추적]
 
     CMD --> FLOW{{외주 9단계 실행}}
     AG --> FLOW
     TP --> FLOW
+    SC --> FLOW
     FLOW --> OUT[/검증된 외주 산출물<br/>+ 인계 매뉴얼 + SLA/]:::out
 
     classDef core fill:#8A2BE2,stroke:#333,color:#fff;
@@ -153,10 +193,11 @@ flowchart TD
 ai-workspace/
 ├── claude-code/          # Claude Code 글로벌 설정 (단일 원본)
 │   ├── CLAUDE.md         #   외주 워크플로 v2.0 + 운영 철학 + 엔지니어링/품질 표준
-│   ├── settings.json     #   권한 · 게이트 강제 hook · statusLine
-│   ├── commands/         #   슬래시 스킬 16종
+│   ├── settings.json     #   권한 · 게이트 강제 hook · SessionStart 대시보드 · statusLine
+│   ├── commands/         #   슬래시 스킬 17종
 │   ├── agents/           #   검수 서브에이전트 5종
-│   └── templates/        #   문서 템플릿 4종
+│   ├── templates/        #   문서 템플릿 4종
+│   └── scripts/          #   bash 진행 추적 (토큰 0)
 ├── prompts/              # 재사용 프롬프트 라이브러리
 ├── knowledge/            # "AI를 더 잘 쓰는 법" 지식 베이스
 └── tools/                # 기타 AI 도구 설정·메모
