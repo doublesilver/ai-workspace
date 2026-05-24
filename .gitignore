@@ -1,0 +1,29 @@
+# 시크릿·인증 (절대 커밋 금지)
+*.key
+*.pem
+.env
+.env.*
+*credentials*
+*.token
+*secret*
+.claude.json
+
+# Claude Code 런타임·개인 데이터 (혹시 claude-code/ 아래로 새어들면 차단)
+**/cache/
+**/sessions/
+**/jobs/
+**/projects/
+**/telemetry/
+**/file-history/
+**/shell-snapshots/
+**/history.jsonl
+**/*.lock
+**/*.log
+settings.local.json
+
+# OS·에디터
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
